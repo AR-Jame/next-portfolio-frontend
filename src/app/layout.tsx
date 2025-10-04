@@ -43,6 +43,7 @@ export default function RootLayout({
         className={` ${ppMori.className} antialiased`}
       >
         {children}
+        <div className="h-screen"></div>
       </body>
     </html>
   );
