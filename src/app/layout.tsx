@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import localFont from 'next/font/local'
+import AuthProvider from "@/provider/AuthProvider";
+import { Toaster } from "sonner";
 
 
 
@@ -42,8 +44,11 @@ export default function RootLayout({
       <body
         className={` ${ppMori.className} antialiased`}
       >
-        {children}
+        <AuthProvider>
+          {children}
+        </AuthProvider>
         <div className="h-screen"></div>
+        <Toaster richColors position="top-center"/>
       </body>
     </html>
   );
