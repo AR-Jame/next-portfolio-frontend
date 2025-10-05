@@ -1,36 +1,29 @@
 "use client"
-
-import { signIn } from "next-auth/react";
+import { login } from "@/actions/auth";
 import { useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 const LoginForm = () => {
-
+    const router = useRouter()
     const params = useSearchParams();
     const error = params.get("error");
     console.log(error);
     const handleLogin = async (e: any) => {
         e.preventDefault();
-        const email = e.target.email.value;
-        const password = e.target.password.value
-
         try {
-            const res = await signIn("credentials", {
-                email,
-                password,
-                callbackUrl: "/dashboard",
-                redirect: false
-            }) 
-            console.log(res);
+            const email = e.target.email.value;
+            const password = e.target.password.value
+            const response = await login({ email, password })
 
-            if (res?.error) {
-                toast.error(res.error)
-                return;
+            if (response.statusCode !== 201) {
+                return toast.error(response.message || "Failed to login. Please try again.")
             }
-            window.location.href = "/dashboard";
-        } catch (error) {
-            console.log(error);
+            router.push("/dashboard")
+        } catch (error: any) {
+            console.log(error, "from here");
+            toast.error(error.message || "Failed to login. Please try again.")
         }
     }
 

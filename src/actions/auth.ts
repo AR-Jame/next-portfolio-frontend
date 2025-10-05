@@ -1,16 +1,36 @@
+"use server"
+import { cookies } from "next/headers";
 
 export const login = async (data: { email: string, password: string }) => {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_API}/auth/login`, {
-        method: "POST",
-        headers: {
-            "content-type": "application/json"
-        },
-        body: JSON.stringify(data)
-    });
+    try {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_API}/auth/login`, {
+            method: "POST",
+            headers: {
+                "content-type": "application/json"
+            },
+            body: JSON.stringify(data),
+            credentials: "include"
+        });
 
-    if (!res?.ok) {
-        console.error("Login failed")
+        return await res.json();
+    } catch (error) {
+        console.log(error);
     }
 
-    return await res.json();
+}
+
+export const getProfile = async () => {
+
+    try {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_API}/user/profile`, {
+            headers: {
+                Cookie: (await cookies()).toString()
+            }
+        })
+        const user = await res.json();
+        return user;
+    } catch (error) {
+        console.log(error);
+        return null
+    }
 }
